@@ -1,5 +1,6 @@
 import React from 'react';
-
+import EmptyCart from "../assets/empty_cart.jpg"
+import { Link } from 'react-router';
 const MyWishlist = () => {
     return (
         <div>

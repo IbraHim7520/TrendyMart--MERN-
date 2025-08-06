@@ -1,5 +1,6 @@
 import React from 'react';
 import beSeller from "../assets/be_a_seller.png"
+import bottom_banner from "../assets/homapge_images/home_page_banner.png"
 const BeSeller = () => {
     return (
         <div className='py-24 '>
@@ -15,7 +16,14 @@ const BeSeller = () => {
 				<button type="button" className="btn bg-orange-500 text-white px-12 w-fit">Be a Seller</button>
 			</div>
 		</div>
+
+
         </div>
+		<div className='w-full container mx-auto'>
+			<img src={bottom_banner}>
+
+			</img>
+		</div>
         </div>
     );
 };
