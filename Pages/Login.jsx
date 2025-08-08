@@ -9,8 +9,7 @@ const Login = () => {
     const {UserLogin , googleLogin} = useAuth();
     const navigate = useNavigate()
     const {register, handleSubmit } = useForm()
-
-
+    
     const handleGoogleLogin = () =>{
         setggleLoading(true)
                 googleLogin()

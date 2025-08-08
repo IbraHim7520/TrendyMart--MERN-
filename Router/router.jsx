@@ -8,6 +8,7 @@ import MyCart from "../Pages/MyCart"
 import MyWishlist from "../Pages/MyWishlist"
 import DRoot from "../Dashbord/Pages/DRoot";
 import DHome from "../Dashbord/Pages/DHome";
+import BeaSeller from "../Pages/BeaSeller";
 const router = createBrowserRouter([
     {
         path:"/",
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
     {
         path:"user-signup",
         Component:Signup
+    },
+    {
+        path:"be-seller",
+        Component:BeaSeller
     },
     {
         path:"dashboard",

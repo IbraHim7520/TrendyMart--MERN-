@@ -14,7 +14,7 @@ const Nav = () => {
                     <ul className='hidden md:flex justify-center items-center gap-5 '>
                         <NavLink className='hover:text-orange-400 hover:cursor-pointer link link-hover'>About Us</NavLink>
                         <NavLink className='hover:text-orange-400 hover:cursor-pointer link link-hover'>Contact Us</NavLink>
-                        <NavLink className='hover:text-orange-400 hover:cursor-pointer link link-hover'>Become a Seller</NavLink>
+                        <NavLink to={"/be-seller"} className='hover:text-orange-400 hover:cursor-pointer link link-hover'>Become a Seller</NavLink>
                     </ul>
                     <h1 className='text-center bg-amber-200 px-5 rounded-md hover:cursor-pointer'>Free delivery on first order <span className='text-semibold text-orange-500'>Shipping $0</span></h1>
                 
@@ -69,7 +69,7 @@ const Nav = () => {
                                     <div className='flex md:hidden space-y-2  flex-col '>
                                         <NavLink className='hover:text-orange-400 hover:cursor-pointer link link-hover'>About Us</NavLink>
                                         <NavLink className='hover:text-orange-400 hover:cursor-pointer link link-hover'>Contact Us</NavLink>
-                                        <NavLink className='hover:text-orange-400 hover:cursor-pointer link link-hover'>Become a Seller</NavLink>
+                                        <NavLink to={"/be-seller"} className='hover:text-orange-400 hover:cursor-pointer link link-hover'>Become a Seller</NavLink>
                                     </div>
                                     <hr className='w-full text-gray-400'></hr>
                                     <div className="w-full  rounded-box flex   lg:hidden flex-col  grow place-items-center">
