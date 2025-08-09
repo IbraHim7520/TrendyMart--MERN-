@@ -8,6 +8,7 @@ import useAuth from '../CustomHooks/useAuth';
 import toast from 'react-hot-toast';
 import { updateProfile } from 'firebase/auth';
 import auth from '../Firebase/firebase.config';
+import Upload_User_Role from '../Custom_Functions/Role_Upload';
 const Signup = () => {
     const {handleSubmit , register , } = useForm()
     const {userSignUp , googleLogin} = useAuth();
@@ -36,16 +37,16 @@ const Signup = () => {
                 updateProfile(auth.currentUser, {
                     displayName: Username,
                     photoURL: imageUrl
-                }).then(()=>{
+                }).then(async()=>{
                     setSignupLoading(false)
                     toast.success("Signup Success.");
                     navigate("/", {replace: true})
+                    const result = await Upload_User_Role(Username , Email , imageUrl);
                 }).catch((err)=>{
                      setSignupLoading(false)
                     toast.error("An error occured!")
                 })
             }
-           
         }).catch(err=>{
             setSignupLoading(false)
             console.log(err);
@@ -55,12 +56,15 @@ const Signup = () => {
     const handleGoogleSignUp = () =>{
         setgoogleLoading(true)
         googleLogin()
-        .then(res=>{
+        .then(async(res)=>{
             setgoogleLoading(false)
             navigate('/', {
                 replace: true
             })
             toast.success("Signed up successfull!")
+            if(res){
+                const result = await Upload_User_Role(res?.user?.displayName , res?.user?.email , res?.user?.photoURL);
+            }
         }).catch(err=>{
             console.log(err)
             setgoogleLoading(false)

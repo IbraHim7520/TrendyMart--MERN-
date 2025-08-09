@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import AuthenticationContext from './AuthContext';
 import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
 import auth from './firebase.config';
+import axios from 'axios';
 
 const AuthProvider = ({children}) => {
     const provider = new GoogleAuthProvider()
     const [userInfo , setUserInfo] = useState(null);
+    const [UserRole , setuserRole] = useState(null);
 
     useEffect( ()=>{
         onAuthStateChanged(auth, (user)=>{
@@ -16,8 +18,15 @@ const AuthProvider = ({children}) => {
             }
         })
     }, [] )
-
-    
+    useEffect( ()=>{
+        const fetchUserRole = async () =>{
+        if(userInfo){
+        const roleData =  await axios.get(`${import.meta.env.VITE_API_URL}/get-role/${userInfo?.email}`)
+        setuserRole(roleData?.data)
+        }
+        }
+        fetchUserRole()
+    }, [userInfo] )
     const googleLogin = () =>{
         return signInWithPopup(auth, provider)
     }
@@ -39,7 +48,8 @@ const AuthProvider = ({children}) => {
         userInfo,
         googleLogin,
         userSignUp,
-        userLogout
+        userLogout,
+        UserRole
 
     }
 
