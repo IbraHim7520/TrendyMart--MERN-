@@ -1,46 +1,57 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 const SellerForm = () => {
+    const {handleSubmit, reset , register , watch} = useForm()
+    const [isOnlineBase , setisOnlineBased] = useState(false);
+  
+    const onSubmit = (data) =>{
+        data.Status = "Pending"
+        axios.post(`${import.meta.env.VITE_API_URL}/seller-req`, {data});
+    }
+    
+
     return (
-        <form className='w-full p-5 mt-8 space-y-3 '>
+        <form onSubmit={handleSubmit(onSubmit)} className='w-full p-5 mt-8 space-y-3 '>
             <div className='flex gap-5 w-full flex-col lg:flex-row'>
                 <div className='text-start w-full'>
                     <p>Name*</p>
-                    <input className='w-full input text-lg' placeholder='Seller Name'></input>
+                    <input {...register("SellerName", {required:true})} type='text' className='w-full input text-lg' placeholder='Seller Name'></input>
                 </div>
                 <div className='text-start w-full'>
                     <p>Email*</p>
-                    <input className='w-full input text-lg' placeholder='Seller Name'></input>
+                    <input {...register("SellerEmail", {required:true})} type='email' className='w-full input text-lg' placeholder='Seller Name'></input>
                 </div>
             </div>
             <div className='text-start w-full'>
                 <p>Business / Store Name*</p>
-                <input className='w-full input text-lg' placeholder='business / store Name'></input>
+                <input {...register("BusinessName", {required:true})} type='text' className='w-full input text-lg' placeholder='business / store Name'></input>
             </div>
 
             <div className='text-start w-full'>
                 <p>Seller NID*</p>
-                <input className='w-full input text-lg' placeholder='e.g: 73462937'></input>
+                <input {...register("SellerNid", {required:true, maxLength: 9})} type='number' className='w-full input text-lg' placeholder='e.g: 73462937'></input>
             </div>
 
             <div className='flex gap-5 w-full flex-col lg:flex-row'>
                 <div className='text-start w-full'>
                     <p>Number*</p>
-                    <input className='w-full input text-lg' placeholder='01xxxxxxxxx'></input>
+                    <input {...register("SellerNumber", {required:true, maxLength:11})} type='number' className='w-full input text-lg' placeholder='01xxxxxxxxx'></input>
                 </div>
 
 
 
                 <div className='text-start w-full'>
                     <p>Support email*</p>
-                    <input className='w-full input text-lg' placeholder='example@mail.com'></input>
+                    <input {...register("SellerSupportEmail", {required:true})} type='email' className='w-full input text-lg' placeholder='example@mail.com'></input>
                 </div>
             </div>
 
             <div className='flex gap-5 w-full flex-col lg:flex-row'>
                 <div className='text-start w-full'>
                     <p>Business type*</p>
-                    <select name="country_code" className='w-full select' required>
+                    <select {...register("BusinessType", {required:true})} name="country_code" className='w-full select' required>
                         <option value="Individual">Individual</option>
                         <option value="Online Based">Online Based</option>
                         <option value="Organization">Organization</option>
@@ -48,14 +59,14 @@ const SellerForm = () => {
                 </div>
                 <div className='text-start w-full'>
                     <p>Location*</p>
-                    <input className='w-full input text-lg' placeholder='e.g Dhaka, Bangladesh'></input>
+                    <input {...register("StoreLocation", {required:true})} type='text' className='w-full input text-lg' placeholder='e.g Dhaka, Bangladesh'></input>
                 </div>
             </div>
 
 
             <div className='text-start w-full'>
                 <p>Product Category*</p>
-                <select name="country_code" className='w-full select' required>
+                <select {...register("ProductCategory", {required:true})} name="country_code" className='w-full select' required>
                     <option value="Food">Food</option>
                     <option value="Home appliense">Home appliense</option>
                     <option value="Skin care">Skin care</option>
@@ -65,22 +76,22 @@ const SellerForm = () => {
                 </select>
             </div>
             <div className='text-start w-full'>
-                <p>Business license no*</p>
-                <input className='w-full input text-lg' placeholder='e.g: 73462937'></input>
+                <p>Business license no</p>
+                <input {...("LicenseNo", {required:true, maxLength:10})} type='number'   className='w-full  input text-lg' placeholder='e.g: 73462937'></input>
             </div>
             <div className='flex gap-5 w-full flex-col lg:flex-row'>
                 <div className='text-start w-full'>
                     <p>Bank Acc Name*</p>
-                    <input className='w-full input text-lg' placeholder='account name'></input>
+                    <input {...register("BankAccName", {required:true})} type='text' className='w-full input text-lg' placeholder='account name'></input>
                 </div>
 
                 <div className='text-start w-full'>
                     <p>Account Number*</p>
-                    <input className='w-full input text-lg' placeholder='e.g 38463845454'></input>
+                    <input {...register("AccNumber", {required:true, maxLength:10})} type='number' className='w-full input text-lg' placeholder='e.g 38463845454'></input>
                 </div>
                 <div className='text-start w-full'>
                     <p>Bank Name*</p>
-                    <select name="country_code" className='w-full select' required>
+                    <select {...register("BankName", {required:true})} name="country_code" className='w-full select' required>
                         <option value="Dutch Bangla Bank">Dutch Bangla Bank</option>
                         <option value="Brac Bank">Brac Bank</option>
                         <option value="Islami Bank">Islami Bank</option>
@@ -92,7 +103,7 @@ const SellerForm = () => {
                 <div className='flex  w-full'>
                     <div className='text-start w-full'>
                         <p>Mobile banking*</p>
-                        <select name="country_code" className='w-full select' required>
+                        <select {...register("MobileBankingName", {required:true})} name="country_code" className='w-full select' required>
                             <option value="Bkash">Bkash</option>
                             <option value="Nagad">Nagad</option>
                             <option value="Rocket">Rocket</option>
@@ -100,12 +111,12 @@ const SellerForm = () => {
                     </div>
                     <div className='text-start w-full'>
                         <p>Number*</p>
-                        <input className='w-full input text-lg' placeholder='01xxxxxxxxx'></input>
+                        <input {...register("MobileBankingNumber" , {required:true , maxLength:11 })} type='number' className='w-full input text-lg' placeholder='01xxxxxxxxx'></input>
                     </div>
                 </div>
             </div>
 
-            <button className='mt-12 btn bg-orange-500 text-white w-full'>Submit</button>
+            <button type='submit' className='mt-12 btn bg-orange-500 text-white w-full'>Submit</button>
         </form>
     );
 };
