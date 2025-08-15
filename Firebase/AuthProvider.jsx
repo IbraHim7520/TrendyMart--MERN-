@@ -8,7 +8,7 @@ const AuthProvider = ({children}) => {
     const provider = new GoogleAuthProvider()
     const [userInfo , setUserInfo] = useState(null);
     const [UserRole , setuserRole] = useState(null);
-
+   
     useEffect( ()=>{
         onAuthStateChanged(auth, (user)=>{
             if(user){
@@ -27,6 +27,7 @@ const AuthProvider = ({children}) => {
         }
         fetchUserRole()
     }, [userInfo] )
+    
     const googleLogin = () =>{
         return signInWithPopup(auth, provider)
     }
@@ -49,7 +50,8 @@ const AuthProvider = ({children}) => {
         googleLogin,
         userSignUp,
         userLogout,
-        UserRole
+        UserRole,
+        
 
     }
 

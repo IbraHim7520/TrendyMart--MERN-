@@ -6,6 +6,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import bwatch from "../assets/b-watch.png"
 import bgadgets from "../assets/b-gadgets.png"
 
+
 const Section1 = () => {
     return (
         <div>
