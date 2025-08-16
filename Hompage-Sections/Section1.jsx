@@ -10,7 +10,7 @@ import bgadgets from "../assets/b-gadgets.png"
 const Section1 = () => {
     return (
         <div>
-            <div className='w-full flex flex-col p-2 '>
+            <div className='w-full px-5 flex flex-col p-2 '>
 
                 <div className="flex lg:container h-fit mx-auto gap-1 w-full">
                     <div className="w-2/7  rounded-box  hidden lg:flex flex-col  grow place-items-center">
@@ -47,7 +47,7 @@ const Section1 = () => {
                     
                 </div>
 
-                <div className='flex mt-12  space-y-5 md:space-y-0 md:gap-5 flex-col md:flex-row lg:container h-fit justify-center items-center mx-auto  w-full'>
+                <div className='flex mt-12  space-y-5 md:space-y-0 md:gap-5 flex-col md:flex-row lg:container px-5 h-fit justify-center items-center mx-auto  w-full'>
                     <div className='w-full relative  rounded-md shadow-xl h-80 bg-amber-50'>
                         <div className='p-5 space-y-2'>
                             <h1 className='text-sm  bg-orange-200 w-fit px-12 rounded-sm'>10%Sale Off</h1>

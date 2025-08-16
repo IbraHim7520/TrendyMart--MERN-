@@ -15,6 +15,8 @@ const SellerForm = () => {
          if (userInfo) {
             const requestData = await axios.get(`${import.meta.env.VITE_API_URL}/seller-reqs/${userInfo?.email}`)
             SetsellerReq(requestData?.data)
+        }else{
+            SetsellerReq(null)
         }
        }
        fetchSellerReq()
@@ -35,8 +37,6 @@ const SellerForm = () => {
 
     return (
         <div className='w-full'>
-
-
             {
                 SellerReq?.Status === "Pending" ?
                     <div className='w-full min-h-[700px] flex flex-col justify-center items-center'>

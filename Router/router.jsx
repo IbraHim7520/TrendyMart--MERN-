@@ -9,6 +9,13 @@ import MyWishlist from "../Pages/MyWishlist"
 import DRoot from "../Dashbord/Pages/DRoot";
 import DHome from "../Dashbord/Pages/DHome";
 import BeaSeller from "../Pages/BeaSeller";
+import ProductManagement from "../Dashbord/Pages/Seller-Page/ProductManagement"
+import OrdersManagement from "../Dashbord/Pages/Seller-Page/OrderManagement"
+import Sales from "../Dashbord/Pages/Seller-Page/Sales";
+import Payments from "../Dashbord/Pages/Seller-Page/Payments";
+import UserManagement from "../Dashbord/Pages/Admin-Page/UserManagement"
+import PModaration from "../Dashbord/Pages/Admin-Page/PModaration"
+import ProductMonitoring from "../Dashbord/Pages/Admin-Page/ProductMonitor"
 const router = createBrowserRouter([
     {
         path:"/",
@@ -52,6 +59,34 @@ const router = createBrowserRouter([
                 index:true,
                 path:"",
                 Component:DHome
+            },
+            {
+                path: "seller-product-manage",
+                Component: ProductManagement
+            },
+            {
+                path: "seller-order-manage",
+                Component: OrdersManagement
+            },
+            {
+                path: "seller-sales-analysis",
+                Component: Sales
+            },
+            {
+                path: "payments",
+                Component: Payments
+            },
+            {
+                path: "admin-user-management",
+                Component: UserManagement
+            },
+            {
+                path: "admin-product-moderation",
+                Component: PModaration
+            },
+            {
+                path: "admin-order-monitoring",
+                Component: ProductMonitoring
             }
         ]
     }

@@ -2,7 +2,7 @@ import React from 'react';
 import noDataImage from "../assets/no_data.jpg"
 const TopRatedProducts = () => {
     return (
-        <div className='lg:container  px-5 lg:px-0 w-full mx-auto mt-24'>
+        <div className='lg:container  px-5  w-full mx-auto mt-24'>
             <div className='flex justify-between items-center'>
                     <div>
                         <h1 className='text-2xl font-semibold text-gray-700'>Top Sales Products</h1>

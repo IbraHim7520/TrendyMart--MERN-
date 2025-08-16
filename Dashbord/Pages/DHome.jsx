@@ -6,7 +6,7 @@ const DHome = () => {
 
     return (
             <div>
-                Hello from Home page
+                Hello from Home page or profile whatever you called page
             </div>
     );
 };

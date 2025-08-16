@@ -9,7 +9,7 @@ import useAuth from '../CustomHooks/useAuth';
 
 const Nav = () => {
     const {userInfo , UserRole} = useAuth()
-    console.log(userInfo);
+
     return (
         <div>
             <div className="px-5 p-1 justify-center text-sm items-center bg-base-100 shadow-sm">

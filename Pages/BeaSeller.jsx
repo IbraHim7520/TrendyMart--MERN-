@@ -15,7 +15,7 @@ const BeaSeller = () => {
         <div className='bg-base-200 flex flex-col justify-center items-center w-full min-h-screen'>
                 <div className='container justify-items-center text-center mx-auto bg-white rounded-2xl shadow flex flex-col  items-center w-full px-5 md:px-12 lg:px-0 p-5'>
                {
-                UserRole?.Role === "Admin" || UserRole?.Role === "Seller" ?
+                UserRole?.Role === "Admin" ?
                 <>
                     <img src={Unable} className='max-w-96'>
                 </img>

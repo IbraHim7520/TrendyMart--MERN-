@@ -3,7 +3,7 @@ import noDataImage from "../assets/no_data.jpg"
 import { IoIosArrowForward } from "react-icons/io";
 const JustForYou = () => {
     return (
-               <div className='lg:container  px-5 lg:px-0 w-full mx-auto mt-24'>
+               <div className='lg:container  px-5  w-full mx-auto mt-24'>
                    <div className='flex justify-between items-center'>
                            <div>
                                <h1 className='text-2xl font-semibold text-gray-700'>Just For You</h1>
