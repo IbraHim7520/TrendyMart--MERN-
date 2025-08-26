@@ -5,7 +5,6 @@ import AllProducts from "../Pages/AllProducts";
 import Login from "../Pages/Login";
 import Signup from "../Pages/Signup";
 import MyCart from "../Pages/MyCart"
-import MyWishlist from "../Pages/MyWishlist"
 import DRoot from "../Dashbord/Pages/DRoot";
 import DHome from "../Dashbord/Pages/DHome";
 import BeaSeller from "../Pages/BeaSeller";
@@ -16,6 +15,7 @@ import Payments from "../Dashbord/Pages/Seller-Page/Payments";
 import UserManagement from "../Dashbord/Pages/Admin-Page/UserManagement"
 import PModaration from "../Dashbord/Pages/Admin-Page/PModaration"
 import ProductMonitoring from "../Dashbord/Pages/Admin-Page/ProductMonitor"
+import MyOrders from "../Pages/MyOrders";
 const router = createBrowserRouter([
     {
         path:"/",
@@ -34,8 +34,8 @@ const router = createBrowserRouter([
                 Component:MyCart
             },
             {
-                path: "/my-wishlist",
-                Component: MyWishlist
+                path: "/my-orders",
+                Component: MyOrders
             }
         ]
     },

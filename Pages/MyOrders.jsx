@@ -1,7 +1,7 @@
 import React from 'react';
 import EmptyCart from "../assets/empty_cart.jpg"
 import { Link } from 'react-router';
-const MyWishlist = () => {
+const MyOrders = () => {
     return (
         <div>
           <div className='w-full min-h-screen flex flex-col justify-center items-center'>
@@ -13,4 +13,4 @@ const MyWishlist = () => {
     );
 };
 
-export default MyWishlist;
+export default MyOrders;

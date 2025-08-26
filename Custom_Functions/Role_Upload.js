@@ -6,6 +6,7 @@ const Upload_User_Role = async (username , usermail , userimage) =>{
         Email: usermail,
         Image: userimage || "N/A",
         Role: "Customer",
+        Contact: "N/A"
     }
 const res = await axios.post(`${import.meta.env.VITE_API_URL}/add-userrole`, {RoleInfo} );
     return res?.data;

@@ -2,7 +2,7 @@ import React from 'react';
 import WebLogo from "../Components/WebLogo"
 const Footer = () => {
     return (
-       <footer className="footer sm:footer-horizontal bg-base-200 text-base-content p-10">
+       <footer className="footer sm:footer-horizontal bg-pink-50 text-base-content p-10">
   <aside>
       <WebLogo></WebLogo>
     <p>
