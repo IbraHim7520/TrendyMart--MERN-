@@ -1,28 +1,227 @@
-import React from 'react';
-import UploadProductForm from "../../../Forms/UploadProductForm"
+import { useMutation, useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+
 const ProductManagement = () => {
-    const openModal = () =>{
-        const modal = document.getElementById("my_modal_5")
-        modal.showModal()
+  const [imgurl, setImgurl] = useState(Array(2).fill(null))
+  const [loading, setLoading] = useState(false)
+  const [products, setProducts] = useState([])
+  const { register, watch, handleSubmit, setValue, reset } = useForm()
+  const mutation = useMutation({
+    mutationFn: async (ProductData) => {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/post-product`, { ProductData })
+      return response?.data?.message
+    },
+    onSuccess: (data, ProductData) => {
+      toast.success("Product Uploaded")
+      reset()
+      setLoading(false)
+      setProducts(
+        (prev) => [...prev, ProductData]
+      )
+      console.log(data)
+
+    },
+    onError: (err) => {
+      toast.error("Something went wrong!")
+      setLoading(false)
+
     }
-    return (
-        <div className='p-5'>
-            <div className='bg-white p-5 w-full'>
-                <button onClick={openModal} className='btn w-full btn-primary text-white btn-sm lg:btn-lg xl:btn '>Add a new product</button>
-<dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
-  <div className="modal-box">
-    <UploadProductForm></UploadProductForm>
-    <div className="modal-action">
-      <form method="dialog">
-        {/* if there is a button in form, it will close the modal */}
-        <button className="btn">Close</button>
-      </form>
-    </div>
-  </div>
-</dialog>
+  })
+
+  const handleImageSelect = (e, i) => {
+    if (e.target.files && e.target.files[0]) {
+      const newImgUrl = [...imgurl];
+      newImgUrl[i] = URL.createObjectURL(e.target.files[0]);
+      setImgurl(newImgUrl);
+      setValue(`Images.${i}`, e.target.files[0])
+    }
+  };
+  const uploadImageOnCloudinary = async (imgFile) => {
+    const formData = new FormData();
+    formData.append("file", imgFile);
+    formData.append("upload_preset", import.meta.env.VITE_CLOUDE_PRESET);
+
+    const response = await axios.post(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDE_NAME}/image/upload`, formData)
+    return response?.data?.secure_url
+  }
+
+  const onSubmit = async (data) => {
+    setLoading(true)
+    console.log("Form Data:", data);
+    console.log("Selected Images:", data.Images); // Array of File objects
+    const ImagesURL = await Promise.all(data.Images.map((img) => uploadImageOnCloudinary(img))) // uploded images file url from cloudinary
+    data.inStock = true
+    data.Reviews = [];
+    data.Ratings = 0.0;
+    data.Images = ImagesURL;
+
+    mutation.mutate(data);
+    // setLoading(false)
+
+
+  };
+
+
+  return (
+    <div className='w-full min-h-screen items-center p-5 grid grid-cols-1 lg:grid-cols-2 justify-center justify-items-center'>
+
+      <div className='w-full h-fit bg-white rounded-lg shadow '>
+        <form onSubmit={handleSubmit(onSubmit)} className='max-w-full space-y-2 p-5 flex flex-col'>
+          <h1 className='text-center text-xl lg:text-2xl 3xl:text-3xl font-medium text-gray-5060 '>Add new product</h1>
+
+          <div className='w-full flex justify-center gap-5 items-center'>
+            {imgurl.map((img, index) => (
+              <div key={index} >
+                <label htmlFor={`image${index}`}>
+                  <input
+                    {...register(`Images.${index}`)}
+                    onChange={(e) => handleImageSelect(e, index)}
+                    accept="image/*"
+                    type="file"
+                    id={`image${index}`}
+                    hidden
+                  />
+                  <img
+                    className="max-w-24 cursor-pointer"
+                    src={img || "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/e-commerce/uploadArea.png"}
+                    alt="uploadArea"
+                    width={100}
+                    height={100}
+                  />
+                </label>
+              </div>
+            ))}
+
+          </div>
+          <div className='w-full'>
+            <label className='text-sm'>Name*</label>
+            <input {...register("ProductName")} className='w-full input' type='text' placeholder='product name'></input>
+          </div>
+
+          <div className='w-full'>
+            <label className='text-sm'>Description*</label>
+            <textarea {...register("ProductDescription")} className='w-full textarea' type='text' placeholder='description'></textarea>
+          </div>
+
+          <div className='w-full gap-0 md:gap-5 flex flex-col md:flex-row justify-center items-center'>
+            <div className='w-full'>
+              <label className='text-sm'>Offer Price*</label>
+              <input {...register("OfferPrice")} className='w-full input' type='number' placeholder='offer price'></input>
             </div>
+            <div className='w-full'>
+              <label className='text-sm'>Price*</label>
+              <input {...register("Price")} className='w-full input' type='number' placeholder='price'></input>
+            </div>
+          </div>
+
+          <div className='w-full gap-0 md:gap-5 flex flex-col md:flex-row justify-center items-center'>
+            <div className='w-full'>
+              <label className='text-sm'>Category*</label>
+              <select {...register("Category")} className='w-full select'>
+                <option>Man</option>
+                <option>Woman</option>
+                <option>Watch</option>
+                <option>Skin Care</option>
+                <option>Shoes</option>
+                <option>Jwellary</option>
+              </select>
+            </div>
+            <div className='w-full'>
+              <label className='text-sm'>Size</label>
+              <input  {...register("Size" || "N/A")} className='w-full input' type='text' placeholder='size (separate by coma (,) )'></input>
+            </div>
+          </div>
+
+          <div className='flex flex-col md:flex-row  gap-0 md:gap-5'>
+            <div className='w-full'>
+              <label className='text-sm'>Avaibility*</label>
+              <select {...register("Avaibility")} className='w-full select'>
+                <option>In Stock</option>
+                <option>Pre-Order</option>
+                <option>Upcomming</option>
+              </select>
+            </div>
+
+            <div className='w-full'>
+              <label className='text-sm'>Quantity*</label>
+              <input {...register("Quantity")} className='w-full input' type='number' placeholder='quantity'></input>
+            </div>
+          </div>
+
+
+
+
+
+
+
+            <button className='btn btn-sm lg:btn btn-secondary text-white'>
+              {
+                loading ? <span className='loading loading-spinner text-center'></span> : "Add product"
+              }
+            </button>
+
+        </form>
+      </div>
+
+      <div className='w-full'>
+        <div className="flex-1 py-10 flex flex-col justify-between">
+          <div className="w-full md:p-10 p-4">
+            <h2 className="pb-4 text-lg font-medium">All Products</h2>
+            <div className="flex flex-col items-center w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
+              <table className="md:table-auto table-fixed w-full overflow-hidden">
+                <thead className="text-gray-900 text-sm text-left">
+                  <tr>
+                    <th className="px-4 py-3 font-semibold truncate">Product</th>
+                    <th className="px-4 py-3 font-semibold truncate">Category</th>
+                    <th className="px-4 py-3 font-semibold truncate hidden md:block">Selling Price</th>
+                    <th className="px-4 py-3 font-semibold truncate">In Stock</th>
+                  </tr>
+                </thead>
+                {
+                  products.length == 0 ?
+                    <div className='w-full flex min-h-72 text-center justify-center items-center'>
+                      <p className='w-full '>No Products yet!</p>
+                    </div>
+                    :
+                    <tbody className="text-sm text-gray-500">
+                      {products.map((product, index) => (
+                        <tr key={index} className="border-t border-gray-500/20">
+                          <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
+                            <div className="border border-gray-300 rounded overflow-hidden">
+                              <img src={product?.Images[0]} alt="Product" className="w-16" />
+                            </div>
+                            <span className="truncate max-sm:hidden w-full">{product?.ProductName}</span>
+                          </td>
+                          <td className="px-4 py-3">{product?.Category}</td>
+                          <td className="px-4 py-3 max-sm:hidden">${product?.OfferPrice}</td>
+                          <td className="px-4 py-3">
+                            <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
+                              <input type="checkbox" className="sr-only peer" defaultChecked={product.inStock} />
+                              <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
+                              <span className="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
+                            </label>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                }
+              </table>
+            </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default ProductManagement;
+
+
+
+
+
+
+

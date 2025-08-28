@@ -5,7 +5,7 @@ import { Link, Outlet } from 'react-router';
 const DHome = () => {
 
     return (
-            <div>
+            <div className='p-5'>
                 Hello from Home page or profile whatever you called page
             </div>
     );

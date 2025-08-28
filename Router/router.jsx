@@ -57,8 +57,8 @@ const router = createBrowserRouter([
         children:[
             {
                 index:true,
-                path:"",
-                Component:DHome
+                Component:DHome,
+                path:"h"
             },
             {
                 path: "seller-product-manage",
