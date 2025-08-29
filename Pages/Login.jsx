@@ -43,7 +43,7 @@ const Login = () => {
     }
     return (
         <div className='w-full min-h-screen flex flex-col justify-center items-center'>
-            <div className='p-5 container mx-auto flex flex-col items-center space-y-5 bg-orange-50 rounded-lg'>
+            <div className='p-5 container mx-auto flex flex-col items-center space-y-5 bg-pink-50 rounded-lg'>
                 <h1 className='text-center font-bold text-3xl md:text-4xl lg:text-5xl'>Login</h1>
                 <p className='text-sm md:text-lg lg:text-xl font-semibold text-gray-700 text-center'>Welcome back with us, Start your journy with a new experience</p>
                 <form onSubmit={handleSubmit(onSubmit)} className="bg-white mt-12  text-gray-500 w-full md:w-2/4  mx-4 md:p-6 p-5 py-8 text-left text-sm rounded-lg shadow-[0px_0px_10px_0px] shadow-black/10">
@@ -62,7 +62,7 @@ const Login = () => {
                         </svg>
                         <input {...register("Password", {required:true})} className="w-full outline-none bg-transparent py-2.5" type="password" placeholder="Password" required />
                     </div>
-                    <button  className="w-full mb-3 bg-orange-500  hover:bg-orange-600 transition-all active:scale-95 py-2.5 rounded text-white font-medium">
+                    <button  className="w-full btn btn-secondary">
                         {
                             loginLoading ? <spa className="loading loading-spinner text-white text-center"></spa>
                             :

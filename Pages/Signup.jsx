@@ -137,7 +137,7 @@ const Signup = () => {
                             </svg>
                             <input {...register("ConfirmPassword")} className="w-full outline-none bg-transparent py-2.5" type="password" placeholder="Confirm Password" required />
                         </div>
-                        <button type='submit' className="w-full mb-3 bg-orange-500 hover:bg-indigo-600 transition-all active:scale-95 py-2.5 rounded text-white font-medium">
+                        <button type='submit' className="w-full btn btn-secondary">
                             {
                                 signupLoading ? 
                                 <span className='loading loading-spinner text-center text-white'></span>
@@ -148,8 +148,7 @@ const Signup = () => {
                         
                         <hr className=''></hr>
                         <p className='text-center my-3 text-xl text-black'>----------Or----------</p>
-                    </form>
-                     <button onClick={(e)=>handleGoogleSignUp(e)} className="btn bg-white w-full text-black border-[#e5e5e5]">
+                                         <button onClick={(e)=>handleGoogleSignUp(e)} className="btn bg-white w-full text-black border-[#e5e5e5]">
                             {
                                 googleLoading ? 
                                 <span className='loading loading-spinner text-orange-500 text-center'></span>
@@ -160,6 +159,8 @@ const Signup = () => {
                                 </div>
                             }
                         </button>
+                    </form>
+
                         <p className="text-center mt-4">Already have an account? <Link to={"/user-login"}  className="text-blue-500 underline">Log In</Link></p>
                    </div>
                 </div>

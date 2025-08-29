@@ -8,7 +8,13 @@ import { FaCartShopping } from "react-icons/fa6";
 import { MdAccountCircle } from "react-icons/md";
 
 const Nav = () => {
-    const {userInfo , UserRole} = useAuth()
+    const {userInfo , UserRole , userLogout , setuserRole , setUserInfo} = useAuth()
+ 
+    const handleLogout = () =>{
+        userLogout()
+        setUserInfo(null)
+        setuserRole(null)
+    }
     return (
        <div className='w-full border-b-1 border-gray-200 px-3 md:px-4 bg-pink-50 top-0 z-50 sticky lg:px-6 xl:px-10 2xl:px-14 3xl:px-20'>
             <div className='w-full  flex justify-between items-center'>
@@ -45,13 +51,26 @@ const Nav = () => {
                     <div className="tooltip" data-tip={userInfo ? userInfo?.displayName : "Account"}>
                         {
                             userInfo ? 
-                                <div className="avatar">
-                                    <div className="ring-primary ring-offset-base-100 w-7 rounded-full ring-2 ring-offset-2">
-                                        <img src={userInfo?.photoURL} />
+
+                                <div className="dropdown dropdown-end">
+                                    <div tabIndex={0} role="button" className="avatar">
+                                        <div className="ring-primary ring-offset-base-100 w-8 rounded-full ring-2 ring-offset-2">
+                                            <img src={userInfo?.photoURL} alt="user avatar" />
+                                        </div>
                                     </div>
+                                    <ul
+                                        tabIndex={0}
+                                        className="dropdown-content menu p-2 space-y-3 shadow bg-base-100 rounded-box w-52"
+                                    >
+                                        <li>{userInfo?.displayName}</li>
+                                        <li>{UserRole?.Role}</li>
+                                        <li onClick={handleLogout} className='btn btn-secondary btn-sm'>Logout</li>
+                                    </ul>
                                 </div>
+
+                               
                             :
-                            <MdAccountCircle />
+                            <Link to={"/user-login"} ><MdAccountCircle size={22} /></Link>
                         }
                     </div>
                 </div>

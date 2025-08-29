@@ -11,7 +11,7 @@ import { FaBoxes } from "react-icons/fa";
 import WebLogo from '../../Components/WebLogo';
 import useAuth from "../../CustomHooks/useAuth"
 const DRoot = () => {
-    const { UserRole } = useAuth()
+    const { UserRole , userInfo} = useAuth()
     const navigate = useNavigate()
     useEffect( ()=>{
         if(UserRole?.Role === "Customer"){

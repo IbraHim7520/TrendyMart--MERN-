@@ -51,6 +51,9 @@ const AuthProvider = ({children}) => {
         userSignUp,
         userLogout,
         UserRole,
+        setUserInfo, 
+        setuserRole
+
         
 
     }

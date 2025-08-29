@@ -1,14 +1,24 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+ import useAuth from '../../../CustomHooks/useAuth.jsx';
 
 const ProductManagement = () => {
+   const {userInfo} = useAuth()
   const [imgurl, setImgurl] = useState(Array(2).fill(null))
   const [loading, setLoading] = useState(false)
   const [products, setProducts] = useState([])
   const { register, watch, handleSubmit, setValue, reset } = useForm()
+  console.log(products)
+  useEffect(()=>{
+    const getSellerProducts = async()=>{
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/seller-products/${userInfo?.email}`);
+      setProducts(response?.data);
+    }
+    getSellerProducts()
+  },[userInfo])
   const mutation = useMutation({
     mutationFn: async (ProductData) => {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/post-product`, { ProductData })
@@ -21,7 +31,7 @@ const ProductManagement = () => {
       setProducts(
         (prev) => [...prev, ProductData]
       )
-      console.log(data)
+      setImgurl(Array(2).fill(''))
 
     },
     onError: (err) => {
@@ -57,11 +67,8 @@ const ProductManagement = () => {
     data.Reviews = [];
     data.Ratings = 0.0;
     data.Images = ImagesURL;
-
+    data.Owner = userInfo?.email;
     mutation.mutate(data);
-    // setLoading(false)
-
-
   };
 
 
@@ -166,53 +173,75 @@ const ProductManagement = () => {
         </form>
       </div>
 
-      <div className='w-full'>
-        <div className="flex-1 py-10 flex flex-col justify-between">
-          <div className="w-full md:p-10 p-4">
-            <h2 className="pb-4 text-lg font-medium">All Products</h2>
-            <div className="flex flex-col items-center w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
-              <table className="md:table-auto table-fixed w-full overflow-hidden">
-                <thead className="text-gray-900 text-sm text-left">
-                  <tr>
-                    <th className="px-4 py-3 font-semibold truncate">Product</th>
-                    <th className="px-4 py-3 font-semibold truncate">Category</th>
-                    <th className="px-4 py-3 font-semibold truncate hidden md:block">Selling Price</th>
-                    <th className="px-4 py-3 font-semibold truncate">In Stock</th>
-                  </tr>
-                </thead>
-                {
-                  products.length == 0 ?
-                    <div className='w-full flex min-h-72 text-center justify-center items-center'>
-                      <p className='w-full '>No Products yet!</p>
+     <div className="w-full">
+  <div className="flex-1 py-10 flex flex-col justify-between">
+    <div className="w-full md:p-10 p-4">
+      <h2 className="pb-4 text-lg font-medium">All Products</h2>
+      
+      {/* Scroll wrapper for small screens */}
+      <div className="w-full overflow-x-auto rounded-md bg-white border border-gray-500/20">
+        <table className="table-auto w-full text-left">
+          <thead className="text-gray-900 text-xs sm:text-sm">
+            <tr>
+              <th className="px-2 md:px-4 py-3 font-semibold truncate">Product</th>
+              <th className="px-2 md:px-4 py-3 font-semibold truncate">Category</th>
+              <th className="px-2 md:px-4 py-3 font-semibold truncate hidden md:table-cell">Selling Price</th>
+              <th className="px-2 md:px-4 py-3 font-semibold truncate">In Stock</th>
+            </tr>
+          </thead>
+
+          <tbody className="text-gray-500 text-xs sm:text-sm">
+            {products.length === 0 ? (
+              <tr>
+                <td colSpan="4" className="text-center py-10">
+                  No Products yet!
+                </td>
+              </tr>
+            ) : (
+              products.map((product, index) => (
+                <tr key={index} className="border-t border-gray-500/20">
+                  {/* Product Image + Name */}
+                  <td className="px-2 md:px-4 py-3 flex items-center gap-3">
+                    <div className="border border-gray-300 rounded overflow-hidden flex-shrink-0">
+                      <img
+                        src={product?.Images[0]}
+                        alt="Product"
+                        className="w-12 h-12 md:w-16 md:h-16 object-cover"
+                      />
                     </div>
-                    :
-                    <tbody className="text-sm text-gray-500">
-                      {products.map((product, index) => (
-                        <tr key={index} className="border-t border-gray-500/20">
-                          <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
-                            <div className="border border-gray-300 rounded overflow-hidden">
-                              <img src={product?.Images[0]} alt="Product" className="w-16" />
-                            </div>
-                            <span className="truncate max-sm:hidden w-full">{product?.ProductName}</span>
-                          </td>
-                          <td className="px-4 py-3">{product?.Category}</td>
-                          <td className="px-4 py-3 max-sm:hidden">${product?.OfferPrice}</td>
-                          <td className="px-4 py-3">
-                            <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
-                              <input type="checkbox" className="sr-only peer" defaultChecked={product.inStock} />
-                              <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
-                              <span className="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
-                            </label>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                }
-              </table>
-            </div>
-          </div>
-        </div>
+                    <span className="truncate">{product?.ProductName}</span>
+                  </td>
+
+                  {/* Category */}
+                  <td className="px-2 md:px-4 py-3">{product?.Category}</td>
+
+                  {/* Selling Price (hidden on mobile) */}
+                  <td className="px-2 md:px-4 py-3 hidden md:table-cell">
+                    ${product?.OfferPrice}
+                  </td>
+
+                  {/* In Stock Switch */}
+                  <td className="px-2 md:px-4 py-3">
+                    <label className="relative inline-flex items-center cursor-pointer text-gray-900">
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        defaultChecked={product.inStock}
+                      />
+                      <div className="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
+                      <span className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
+                    </label>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
+    </div>
+  </div>
+</div>
+
     </div>
   );
 };
