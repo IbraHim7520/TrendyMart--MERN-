@@ -20,8 +20,8 @@ const PopuProducts = ({popularProduct}) => {
              </div>
                     :
                  <div className='w-full flex flex-col  place-items-end'>
-                    <Link to={"/all-products"} className='btn w-fit btn-sm btn-secondary'>View all</Link>
-                           <div className='w-full grid grid-cols-1 justify-items-center md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6'>
+                    <Link to={"/all-products"} className='btn mb-5 w-fit btn-sm btn-secondary'>View all</Link>
+                           <div className='w-full space-y-3 grid grid-cols-1 justify-items-center md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6'>
                             {
                                 popularProduct.map( (product)=> <ProductCard key={product._id} product={product}></ProductCard> )
                             }

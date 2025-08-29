@@ -16,6 +16,7 @@ import UserManagement from "../Dashbord/Pages/Admin-Page/UserManagement"
 import PModaration from "../Dashbord/Pages/Admin-Page/PModaration"
 import ProductMonitoring from "../Dashbord/Pages/Admin-Page/ProductMonitor"
 import MyOrders from "../Pages/MyOrders";
+import ProductDetails from "../Pages/ProductDetails";
 const router = createBrowserRouter([
     {
         path:"/",
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
             {
                 path: "/my-orders",
                 Component: MyOrders
+            },
+            {
+                path:"/details/:id",
+                Component: ProductDetails
             }
         ]
     },
