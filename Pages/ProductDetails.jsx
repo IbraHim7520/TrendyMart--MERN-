@@ -1,12 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router';
+import ReviewImage from "../assets/review.png"
 
+import toast from 'react-hot-toast';
+import useAuth from '../CustomHooks/useAuth';
 const ProductDetails = () => {
     const { id } = useParams()
-
     const [thumbnail, setThumbnail] = useState(null);
+    const {userInfo} = useAuth()
     const { data, isPending, isError } = useQuery({
         queryKey: ["get-details"],
         queryFn: async () => {
@@ -16,10 +19,6 @@ const ProductDetails = () => {
 
         }
     })
-
-
-
-
 
 
     if (isError || !data || data.length === 0) {
@@ -36,6 +35,29 @@ const ProductDetails = () => {
                 <p>Loading..</p>
             </div>
         );
+    }
+
+    const handleItemBuy = () => {
+        if (userInfo?.email === data?.Owner) {
+            toast.error("Owner can't buy his own product!")
+            return
+        }
+    }
+
+    const handleItemCart = async() => {
+        if (userInfo?.email === data?.Owner) {
+            toast.error("Owner can't buy his own product!")
+            return
+        }
+        data.Quantity = 0
+         const response = await axios.post(`${import.meta.env.VITE_API_URL}/add-cart`, {data})
+       
+        if(response?.data?.insertedId){
+            toast.success("Successfully added to cart.")
+        }else{
+             toast.error(response?.data?.message)
+        }
+
     }
 
 
@@ -102,13 +124,33 @@ const ProductDetails = () => {
 
 
                     <div className="flex items-center mt-10 gap-4 text-base">
-                        <button className="w-full py-3.5 cursor-pointer font-medium bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition" >
+                        <button onClick={handleItemCart}  className="w-full py-3.5 cursor-pointer font-medium bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition" >
                             Add to Cart
                         </button>
-                        <button className="w-full py-3.5 cursor-pointer font-medium bg-secondary text-white hover:bg-indigo-600 transition" >
+                        <button onClick={handleItemBuy}  className="w-full  py-3.5 cursor-pointer font-medium bg-secondary text-white hover:bg-indigo-600 transition" >
                             Buy now
                         </button>
                     </div>
+                </div>
+            </div>
+            {/* Product Reviews Section */}
+            <div className='mt-5 md:mt-8 lg:mt-12'>
+              <div className='flex w-fit items-center justify-center gap-2'>
+                      <h1 className='text-3xl font-medium mb-2'>Reviews</h1>
+                      <img className='w-8 ' src={ReviewImage}></img>
+              </div>
+                <hr className='w-full text-gray-400'></hr>
+
+                <div className='w-full gap-3 min-h-96 md:grid md:grid-cols-12 flex flex-col'>
+                        {/* Customers Reviews Box */}
+                        <div className='w-full justify-items-center h-full items-center col-span-8'>
+                            <img src={ReviewImage}></img>
+                            <h1>No Reviews Yet!</h1>
+                        </div>
+
+                        <div className='w-full col-span-4'>
+
+                        </div>
                 </div>
             </div>
         </div>
