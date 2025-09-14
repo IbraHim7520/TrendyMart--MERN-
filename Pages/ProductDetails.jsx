@@ -1,25 +1,38 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { use, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
+import { useForm } from "react-hook-form"
 import { Link, useLocation, useParams } from 'react-router';
 import ReviewImage from "../assets/review.png"
+import { RxCross2 } from "react-icons/rx";
 
 import toast from 'react-hot-toast';
 import useAuth from '../CustomHooks/useAuth';
 const ProductDetails = () => {
     const { id } = useParams()
+    
+    const [selectedImg, setSelectedImg] = useState("");
+    const [selectedSize , setSelectedSize] = useState('')
+    const [quantity , setQuantity] = useState(1)
     const [thumbnail, setThumbnail] = useState(null);
-    const {userInfo} = useAuth()
+    const { userInfo } = useAuth()
     const { data, isPending, isError } = useQuery({
         queryKey: ["get-details"],
         queryFn: async () => {
             const result = await axios.get(`${import.meta.env.VITE_API_URL}/one-product/${id}`)
             setThumbnail(result?.data?.Images[0])
             return result?.data
-
         }
     })
-
+    
+    if (isPending) {
+        return (
+            <div className="w-full min-h-screen flex flex-col justify-center items-center">
+                <span className="loading text-4xl loading-spinner"></span>
+                <p>Loading..</p>
+            </div>
+        );
+    }
 
     if (isError || !data || data.length === 0) {
         return (
@@ -28,39 +41,56 @@ const ProductDetails = () => {
             </div>
         );
     }
-    if (isPending) {
-        return (
-            <div className="w-full flex flex-col justify-center items-center">
-                <span className="loading loading-spinner"></span>
-                <p>Loading..</p>
-            </div>
-        );
-    }
 
-    const handleItemBuy = () => {
+    const handleItemCartModal_Open = () => {
         if (userInfo?.email === data?.Owner) {
             toast.error("Owner can't buy his own product!")
             return
         }
+        if(!userInfo){
+            return toast.error("Please login before to buy")
+        }
+        const Modal = document.getElementById('my_modal_2')
+        Modal.showModal()
     }
 
-    const handleItemCart = async() => {
-        if (userInfo?.email === data?.Owner) {
-            toast.error("Owner can't buy his own product!")
+    const handleCartAddSubmi = async(e) =>{
+        e.preventDefault()
+        const Modal = document.getElementById('my_modal_2')
+        if (!selectedImg || !selectedSize){
+            toast.error("Select an option first")
             return
         }
-        data.Quantity = 0
-         const response = await axios.post(`${import.meta.env.VITE_API_URL}/add-cart`, {data})
-       
-        if(response?.data?.insertedId){
+        const itemQuantity = e.target.SelectedQuantity.value
+        const itemImage = e.target.productImage.value
+        const itemSize = e.target.SelectedSize.value
+        const SelectedCartItem = {
+            ItemID: data?._id,
+            Name: data?.ProductName,
+            Size: itemSize,
+            Image: itemImage,
+            Quantity : parseInt(itemQuantity),
+            Price: data?.OfferPrice,
+            AddedBy: userInfo?.email,
+            Status: "Pending"
+        }
+         const response = await axios.post(`${import.meta.env.VITE_API_URL}/add-cart`, { SelectedCartItem })
+        console.log(response)
+         if (response?.data?.insertedId) {
             toast.success("Successfully added to cart.")
-        }else{
-             toast.error(response?.data?.message)
+            Modal.close()
+            e.tartet.reset()
+        } else {
+            toast.error(response?.data?.message)
+            Modal.close()
         }
-
     }
 
-
+    const handleSelectionReset = ()=>{
+        setQuantity(1)
+        setSelectedImg("")
+        setSelectedSize("")
+    }
     return (
         <div className="max-w-full w-full  px-6">
             <p>
@@ -69,6 +99,73 @@ const ProductDetails = () => {
                 <span> {data?.Category}</span> /
                 <span className="text-indigo-500"> {data?.ProductName}</span>
             </p>
+
+            <dialog id="my_modal_2" className="modal">
+                <div className="modal-box">
+                    <form onSubmit={(e)=>handleCartAddSubmi(e)} className='w-full space-y-3'>
+                        <input className='w-full input' value={data?.ProductName} />
+                        <div className="flex w-full justify-start items-center gap-4">
+                            {/* Image 1 */}
+                            <label
+                                className={`cursor-pointer border-2 rounded-lg overflow-hidden ${selectedImg === "img1" ? "border-blue-500" : "border-gray-300"
+                                    }`}
+                            >
+                                <input
+                                    type="radio"
+                                    name="productImage"
+                                    value={data?.Images[0]}
+                                    className="hidden"
+                                    onChange={() => setSelectedImg("img1")}
+                                />
+                                <img
+                                    src={data?.Images[0]}
+                                    alt="Option 1"
+                                    className="w-32 h-32 object-cover"
+                                />
+                            </label>
+
+                            {/* Image 2 */}
+                            <label
+                                className={`cursor-pointer border-2 rounded-lg overflow-hidden ${selectedImg === "img2" ? "border-blue-500" : "border-gray-300"
+                                    }`}
+                            >
+                                <input
+                                    type="radio"
+                                    name="productImage"
+                                    value={data?.Images[1]}
+                                    className="hidden"
+                                    onChange={() => setSelectedImg("img2")}
+                                />
+                                <img
+                                    src={data?.Images[1]}
+                                    alt="Option 2"
+                                    className="w-32 h-32 object-cover"
+                                />
+                            </label>
+                        </div>
+                        <div className='flex gap-3 justify-start items-center'>
+                            {
+                                    data?.Size.split(",").map((size , index)=> <label key={index} className={`cursor-pointer border-2 rounded-lg overflow-hidden ${selectedSize === size ? "border-green-500" : "border-gray-300" } `} ><input name='SelectedSize' type='radio' className='hidden' onChange={()=> setSelectedSize(size)} value={size}></input> <p className='btn'>{size}</p> </label> )   
+                            }
+                        </div>
+                        <div className='flex justify-start items-center gap-2'>
+                            <button type='button' onClick={()=>  setQuantity(quantity+1)} className='btn btn-outline'>+</button>
+                            <input name='SelectedQuantity' className='btn btn-ghost px-3' value={quantity}></input>
+                            <button type='button' onClick={()=>setQuantity(prev => Math.max(prev - 1, 1))} className='btn btn-outline'>-</button>
+                        </div>
+                        
+                        <div className='mt-5 flex justify-between items-center '>
+                            <button type='submit' className='btn px-5 btn-secondary'>
+                            Add
+                        </button>
+                        <p onClick={handleSelectionReset} className='text-sm flex gap-2 items-center justify-center cursor-pointer link-hover'>Clear <RxCross2 size={15}/></p>
+                        </div>
+                    </form>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
 
             <div className="flex p-5 lg:p-8 gap-5 w-full flex-col md:flex-row justify-center ">
                 <div className="flex flex-col gap-3">
@@ -124,33 +221,45 @@ const ProductDetails = () => {
 
 
                     <div className="flex items-center mt-10 gap-4 text-base">
-                        <button onClick={handleItemCart}  className="w-full py-3.5 cursor-pointer font-medium bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition" >
+                        <button onClick={handleItemCartModal_Open} className="w-full lg:w-fit px-24 py-3.5 cursor-pointer font-medium bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition" >
                             Add to Cart
                         </button>
-                        <button onClick={handleItemBuy}  className="w-full  py-3.5 cursor-pointer font-medium bg-secondary text-white hover:bg-indigo-600 transition" >
-                            Buy now
-                        </button>
+
                     </div>
                 </div>
             </div>
             {/* Product Reviews Section */}
             <div className='mt-5 md:mt-8 lg:mt-12'>
-              <div className='flex w-fit items-center justify-center gap-2'>
-                      <h1 className='text-3xl font-medium mb-2'>Reviews</h1>
-                      <img className='w-8 ' src={ReviewImage}></img>
-              </div>
+                <div className='flex w-fit items-center justify-center gap-2'>
+                    <h1 className='text-3xl font-medium mb-2'>Reviews</h1>
+                    <img className='w-8 ' src={ReviewImage}></img>
+                </div>
                 <hr className='w-full text-gray-400'></hr>
 
                 <div className='w-full gap-3 min-h-96 md:grid md:grid-cols-12 flex flex-col'>
-                        {/* Customers Reviews Box */}
-                        <div className='w-full justify-items-center h-full items-center col-span-8'>
-                            <img src={ReviewImage}></img>
-                            <h1>No Reviews Yet!</h1>
-                        </div>
+                    {/* Customers Reviews Box */}
+                    <div className='w-full  p-4 justify-items-center h-full items-center col-span-8'>
+                        <img src={ReviewImage}></img>
+                        <h1>No Reviews Yet!</h1>
+                    </div>
 
-                        <div className='w-full col-span-4'>
+                    <div className='w-full  p-4 col-span-4'>
+                        <h1 className='text-2xl font-medium'>Your feedback</h1>
 
-                        </div>
+                        <form className='flex w-full flex-col mt-5'>
+                            <div className="rating mb-5">
+                                <input value={"1"} type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" aria-label="1 star" />
+                                <input value={"2"} type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" aria-label="2 star" />
+                                <input value={"3"} type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" aria-label="3 star" />
+                                <input type="radio" value={"4"} name="rating-2" className="mask mask-star-2 bg-orange-400" aria-label="4 star" />
+                                <input type="radio" value={"5"} name="rating-2" className="mask mask-star-2 bg-orange-400" aria-label="5 star" />
+                            </div>
+
+                            <label>Your Opinion</label>
+                            <textarea className="textarea w-" placeholder="Bio"></textarea>
+                            <button className='btn w-fit mt-5 px-12 btn-secondary'>Submit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
